@@ -1,0 +1,32 @@
+﻿<ui:ContentDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:vm="using:ProcessAffinityManager.ViewModels"
+                  xmlns:ui="using:FluentAvalonia.UI.Controls"
+                  x:Class="ProcessAffinityManager.Views.RuleEditorDialog"
+                  x:DataType="vm:RuleEditorViewModel"
+                  Title="Rule Editor"
+                  PrimaryButtonText="Save"
+                  CloseButtonText="Cancel">
+
+    <StackPanel Spacing="15">
+        <!-- Rule Type -->
+        <TextBlock Text="Rule Type" />
+        <ComboBox ItemsSource="{Binding RuleTypes}"
+                  SelectedItem="{Binding RuleType}" />
+
+        <!-- Matching Criteria -->
+        <TextBlock Text="Matching Criteria (e.g., 'chrome' or a full path)" />
+        <TextBox Text="{Binding Criteria}" />
+
+        <!-- Target Profile -->
+        <TextBlock Text="Target Profile" />
+        <ComboBox ItemsSource="{Binding AllTargets}"
+                  SelectedItem="{Binding SelectedTargetView}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </StackPanel>
+</ui:ContentDialog>

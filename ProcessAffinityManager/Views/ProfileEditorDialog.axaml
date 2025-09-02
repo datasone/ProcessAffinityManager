@@ -1,0 +1,97 @@
+﻿<ui:ContentDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:vm="using:ProcessAffinityManager.ViewModels"
+                  xmlns:s="using:ProcessAffinityManager.Services"
+                  xmlns:ui="using:FluentAvalonia.UI.Controls"
+                  x:Class="ProcessAffinityManager.Views.ProfileEditorDialog"
+                  x:DataType="vm:ProfileEditorViewModel"
+                  Title="Profile Editor"
+                  FullSizeDesired="True"
+                  PrimaryButtonText="Save"
+                  CloseButtonText="Cancel">
+
+    <ui:ContentDialog.Resources>
+        <s:EnumToBooleanConverter x:Key="EnumToBool" />
+        <StreamGeometry x:Key="add_regular">M14.5,13 L14.5,3.75378577 C14.5,3.33978577 14.164,3.00378577 13.75,3.00378577 C13.336,3.00378577 13,3.33978577 13,3.75378577 L13,13 L3.75387573,13 C3.33987573,13 3.00387573,13.336 3.00387573,13.75 C3.00387573,14.164 3.33987573,14.5 3.75387573,14.5 L13,14.5 L13,23.7523651 C13,24.1663651 13.336,24.5023651 13.75,24.5023651 C14.164,24.5023651 14.5,24.1663651 14.5,23.7523651 L14.5,14.5 L23.7498262,14.5030754 C24.1638262,14.5030754 24.4998262,14.1670754 24.4998262,13.7530754 C24.4998262,13.3390754 24.1638262,13.0030754 23.7498262,13.0030754 L14.5,13 Z</StreamGeometry>
+    </ui:ContentDialog.Resources>
+
+    <ScrollViewer>
+        <StackPanel Spacing="15">
+            <!-- Profile Name -->
+            <TextBlock Text="Profile Name" />
+            <TextBox Text="{Binding Name}" />
+
+            <!-- Profile Type -->
+            <TextBlock Text="Profile Type" />
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <RadioButton Content="CPU Affinity" GroupName="Type"
+                             IsChecked="{Binding ProfileType, Converter={StaticResource EnumToBool}, ConverterParameter=CPUAffinity}" />
+                <RadioButton Content="CPU Set" GroupName="Type"
+                             IsChecked="{Binding ProfileType, Converter={StaticResource EnumToBool}, ConverterParameter=CPUSet}" />
+            </StackPanel>
+
+            <!-- CPU Cores Selection -->
+            <TextBlock Text="CPU Cores" />
+            <ItemsControl ItemsSource="{Binding Cores}" MinWidth="500">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <!-- A panel that wraps items to new lines as needed -->
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border MinWidth="100" Padding="5">
+                            <CheckBox Content="{Binding CoreNumber, StringFormat='CPU {0}'}"
+                                      IsChecked="{Binding IsSelected}"
+                                      HorizontalAlignment="Left" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Separator />
+            <CheckBox Content="Make this profile exclusive"
+                      IsEnabled="{Binding IsExclusiveAvailable}"
+                      IsChecked="{Binding IsExclusive}"
+                      ToolTip.Tip="If a process with this profile is running, all other managed processes will be forced to use the selected fallback profile." />
+
+            <ComboBox ItemsSource="{Binding AvailableFallbacks}"
+                      SelectedItem="{Binding SelectedFallbackProfile}"
+                      PlaceholderText="Select fallback profile..."
+                      IsEnabled="{Binding IsExclusive}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <Separator />
+            <TextBlock Text="Delayed Activations (Sub-Profiles)" />
+
+            <Button Command="{Binding AddSubProfileCommand}">
+                <StackPanel Spacing="15" Orientation="Horizontal">
+                    <PathIcon Data="{StaticResource add_regular}" />
+                    <TextBlock Text="Add Delay" />
+                </StackPanel>
+            </Button>
+
+            <ListBox ItemsSource="{Binding SubProfileViewModels}" Margin="0,5,0,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                            <TextBlock Grid.Column="0" Text="Apply after" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Column="1" Value="{Binding DelaySeconds}" FormatString="0"
+                                           Width="120" Margin="5,0" />
+                            <TextBlock Grid.Column="2" Text="seconds" VerticalAlignment="Center" Margin="5,0" />
+                            <Button Grid.Column="3" Content="Remove" Margin="5,0"
+                                    Command="{Binding $parent[ListBox].DataContext.RemoveSubProfileCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </ScrollViewer>
+</ui:ContentDialog>

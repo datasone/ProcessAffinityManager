@@ -1,0 +1,35 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ProcessAffinityManager.ViewModels"
+             xmlns:s="using:ProcessAffinityManager.Services"
+             x:Class="ProcessAffinityManager.Views.LogViewerView"
+             x:DataType="vm:LogViewerViewModel">
+    <UserControl.Resources>
+        <s:LogLevelToBrushConverter x:Key="LogLevelToBrush" />
+    </UserControl.Resources>
+
+    <DockPanel Margin="20 40 20 20">
+        <TextBlock Text="Application Log" FontSize="28" FontWeight="Bold" DockPanel.Dock="Top" Margin="0 0 0 20"/>
+        
+        <DataGrid ItemsSource="{Binding LogEntries}" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp}" Width="170" />
+
+                <DataGridTemplateColumn Header="Level" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Level}" FontWeight="SemiBold"
+                                       VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock.Foreground>
+                                    <Binding Path="Level" Converter="{StaticResource LogLevelToBrush}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

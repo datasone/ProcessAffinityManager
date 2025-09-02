@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ApplicationIcon>Assets/logo.ico</ApplicationIcon>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Models\Models.fs"/>
+        <AvaloniaResource Include="Assets\**"/>
+        <Compile Include="Services\LoggingService.fs"/>
+        <Compile Include="Services\NativeMethods.fs"/>
+        <Compile Include="Services\CpuSetsHelper.fs"/>
+        <Compile Include="Services\IProcessMonitoringService.fs"/>
+        <Compile Include="Services\ProcessMonitoringService.fs"/>
+        <Compile Include="Services\ConfigurationService.fs"/>
+        <Compile Include="Services\StartupService.fs"/>
+        <Compile Include="Services\CustomConverters.fs"/>
+        <Compile Include="Services\SizeAdjuster.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="ViewModels\ViewModelBase.fs"/>
+        <Compile Include="ViewModels\BasicDialogs.fs" />
+        <Compile Include="ViewModels\HomePageViewModel.fs"/>
+        <Compile Include="ViewModels\ProfileEditorViewModel.fs"/>
+        <Compile Include="Views\ProfileEditorDialog.axaml.fs" />
+        <Compile Include="ViewModels\ProfilesPageViewModel.fs"/>
+        <Compile Include="ViewModels\RuleEditorViewModel.fs"/>
+        <Compile Include="Views\RuleEditorDialog.axaml.fs" />
+        <Compile Include="ViewModels\RulesPageViewModel.fs"/>
+        <Compile Include="ViewModels\SettingsPageViewModel.fs"/>
+        <Compile Include="ViewModels\AboutPageViewModel.fs"/>
+        <Compile Include="ViewModels\LogViewerViewModel.fs"/>
+        <Compile Include="ViewModels\MainWindowViewModel.fs"/>
+        <Compile Include="Views\MainWindow.axaml.fs"/>
+        <Compile Include="Views\HomePageView.axaml.fs"/>
+        <Compile Include="Views\ProfilesPageView.axaml.fs"/>
+        <Compile Include="Views\RulesPageView.axaml.fs"/>
+        <Compile Include="Views\SettingsPageView.axaml.fs"/>
+        <Compile Include="Views\AboutPageView.axaml.fs"/>
+        <Compile Include="Views\LogViewerView.axaml.fs"/>
+        <Compile Include="ViewLocator.fs"/>
+        <Compile Include="App.axaml.fs"/>
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.4"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.4"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.4"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.4"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.4"/>
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.4">
+            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+        <PackageReference Include="FluentAvaloniaUI" Version="2.4.0"/>
+        <PackageReference Include="FSharp.SystemTextJson" Version="1.4.36"/>
+        <PackageReference Include="System.Management" Version="9.0.8"/>
+        <PackageReference Include="TaskScheduler" Version="2.12.2"/>
+    </ItemGroup>
+</Project>

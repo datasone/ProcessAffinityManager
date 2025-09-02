@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ProcessAffinityManager.ViewModels"
+             xmlns:m="using:ProcessAffinityManager.Models"
+             x:Class="ProcessAffinityManager.Views.ProfilesPageView"
+             x:DataType="vm:ProfilesPageViewModel">
+
+    <UserControl.Resources>
+        <StreamGeometry x:Key="add_regular">M14.5,13 L14.5,3.75378577 C14.5,3.33978577 14.164,3.00378577 13.75,3.00378577 C13.336,3.00378577 13,3.33978577 13,3.75378577 L13,13 L3.75387573,13 C3.33987573,13 3.00387573,13.336 3.00387573,13.75 C3.00387573,14.164 3.33987573,14.5 3.75387573,14.5 L13,14.5 L13,23.7523651 C13,24.1663651 13.336,24.5023651 13.75,24.5023651 C14.164,24.5023651 14.5,24.1663651 14.5,23.7523651 L14.5,14.5 L23.7498262,14.5030754 C24.1638262,14.5030754 24.4998262,14.1670754 24.4998262,13.7530754 C24.4998262,13.3390754 24.1638262,13.0030754 23.7498262,13.0030754 L14.5,13 Z</StreamGeometry>
+    </UserControl.Resources>
+    
+    <StackPanel Spacing="15" Margin="20 40 20 20">
+        <StackPanel Spacing="30" Orientation="Horizontal" Margin="0 0 0 20">
+            <TextBlock Text="Profiles" FontSize="28" FontWeight="Bold" />
+
+            <Button Command="{Binding AddProfileCommand}">
+                <StackPanel Spacing="15" Orientation="Horizontal">
+                    <PathIcon Data="{StaticResource add_regular}" />
+                    <TextBlock Text="Add New Profile" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <!-- List of Profiles -->
+        <ListBox ItemsSource="{Binding Profiles}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type m:Profile}">
+                    <Grid ColumnDefinitions="*,Auto,Auto" Margin="0 5 0 5">
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding ProfileType, StringFormat='Type: {0}'}" FontSize="12" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                            <Button Content="Edit"
+                                    Command="{Binding $parent[ListBox].DataContext.EditProfileCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Content="Remove"
+                                    Command="{Binding $parent[ListBox].DataContext.RemoveProfileCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+</UserControl>

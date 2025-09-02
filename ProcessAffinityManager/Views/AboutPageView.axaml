@@ -1,0 +1,15 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ProcessAffinityManager.ViewModels"
+             x:Class="ProcessAffinityManager.Views.AboutPageView"
+             x:DataType="vm:AboutPageViewModel">
+    <StackPanel Spacing="15" Margin="20 40 20 20">
+        <TextBlock Text="About" FontSize="28" FontWeight="Bold" Margin="0 0 0 20"/>
+
+        <TextBlock Text="{Binding Version, StringFormat='Version: {0}'}"/>
+        <TextBlock Text="{Binding Author, StringFormat='Author: {0}'}"/>
+        <TextBlock Text="{Binding License, StringFormat='License: {0}'}"/>
+        <HyperlinkButton Content="Source Code"
+                         NavigateUri="{Binding GitHubUrl}"/>
+    </StackPanel>
+</UserControl>
