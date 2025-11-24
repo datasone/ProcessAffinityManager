@@ -109,7 +109,7 @@ type RulesPageViewModel(rules: ObservableCollection<Rule>, profiles: ObservableC
                 { Id = System.Guid.NewGuid()
                   RuleType = ProcessName
                   Criteria = ""
-                  Priority = this.Rules.Count
+                  Priority = 0
                   Target =
                     MainProfile(
                         if profiles.Count > 0 then
@@ -125,7 +125,7 @@ type RulesPageViewModel(rules: ObservableCollection<Rule>, profiles: ObservableC
                 let! result = dialog.ShowAsync(getMainWindow ()) |> Async.AwaitTask
 
                 if result = ContentDialogResult.Primary then
-                    this.Rules.Add(dialog.GetRule())
+                    this.Rules.Insert(0, dialog.GetRule())
                     resyncViewModels ()
             }
             |> Async.StartImmediate)
