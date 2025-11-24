@@ -22,6 +22,8 @@ type ProcessMonitoringService() as this =
     let mutable exclusiveProcessPids = Set.empty<int>
     let mutable exclusiveProfile: Profile option = None
     let mutable fallbackProfile: Profile option = None
+    
+    let defaultAffinity = Process.GetCurrentProcess().ProcessorAffinity
 
     let actualProfile processId (profile: Profile) =
         match profile, exclusiveProfile with
@@ -60,6 +62,10 @@ type ProcessMonitoringService() as this =
             let processObj = Process.GetProcessById processId
             let processName = getProcessName processObj
             let profile = actualProfile processId profile
+
+            // Reset before applying, as we may apply a CPU set on a process already have affinity set
+            processObj.ProcessorAffinity <- defaultAffinity
+            let _ = NativeMethods.setProcessDefaultCpuSets processObj Seq.empty
 
             match profile.ProfileType with
             | CPUAffinity ->
