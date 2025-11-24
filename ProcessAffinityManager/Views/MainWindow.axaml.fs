@@ -6,7 +6,7 @@ open Avalonia.Markup.Xaml
 open FluentAvalonia.UI.Controls
 open ProcessAffinityManager.ViewModels
 
-type MainWindow() as this =
+type MainWindow(StartMinimized: bool) as this =
     inherit Window()
 
     do
@@ -31,3 +31,9 @@ type MainWindow() as this =
         
     member this.OnSelectionChanged (_sender: obj) (e: NavigationViewSelectionChangedEventArgs) =
         (this.DataContext :?> MainWindowViewModel).OnSelectionChanged _sender e
+
+    override this.OnLoaded(e) =
+        base.OnLoaded(e)
+        if StartMinimized then
+            this.WindowState <- WindowState.Minimized
+            this.Hide()

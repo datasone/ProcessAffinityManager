@@ -24,16 +24,15 @@ type App() =
 
     let config = ConfigurationService.load systemCpuSetsInfo
 
-    let showMainWindow (lifetime: IClassicDesktopStyleApplicationLifetime) =
-        if lifetime.MainWindow = null then
-            lifetime.MainWindow <- MainWindow(DataContext = MainWindowViewModel(config, systemCpuSetsInfo))
-            (lifetime.MainWindow.DataContext :?> MainWindowViewModel).ApplyTheme()
+    let showMainWindow (desktop: IClassicDesktopStyleApplicationLifetime) =
+        if desktop.MainWindow = null || not desktop.MainWindow.IsLoaded then
+            ()
+        else
+            desktop.MainWindow.Show()
+            desktop.MainWindow.Activate()
 
-        lifetime.MainWindow.Show()
-        lifetime.MainWindow.Activate()
-
-        if lifetime.MainWindow.WindowState = WindowState.Minimized then
-            lifetime.MainWindow.WindowState <- WindowState.Normal
+            if desktop.MainWindow.WindowState = WindowState.Minimized then
+                desktop.MainWindow.WindowState <- WindowState.Normal
 
     override this.Initialize() = AvaloniaXamlLoader.Load(this)
 
@@ -81,9 +80,10 @@ type App() =
 
             trayIcon.IsVisible <- true
 
-            if not config.Settings.StartMinimized then
-                desktop.MainWindow <- MainWindow(DataContext = MainWindowViewModel(config, systemCpuSetsInfo))
-                (desktop.MainWindow.DataContext :?> MainWindowViewModel).ApplyTheme()
+            desktop.MainWindow <-
+                MainWindow(config.Settings.StartMinimized, DataContext = MainWindowViewModel(config, systemCpuSetsInfo))
+
+            (desktop.MainWindow.DataContext :?> MainWindowViewModel).ApplyTheme()
         | _ -> ()
 
         base.OnFrameworkInitializationCompleted()
