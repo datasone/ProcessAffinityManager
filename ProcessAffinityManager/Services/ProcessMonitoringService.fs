@@ -22,7 +22,7 @@ type ProcessMonitoringService() as this =
     let mutable exclusiveProcessPids = Set.empty<int>
     let mutable exclusiveProfile: Profile option = None
     let mutable fallbackProfile: Profile option = None
-    
+
     let defaultAffinity = Process.GetCurrentProcess().ProcessorAffinity
 
     let actualProfile processId (profile: Profile) =
@@ -88,8 +88,16 @@ type ProcessMonitoringService() as this =
 
             processChangedEvent.Trigger(null, args)
 
-        with ex ->
-            LoggingService.Error $"Failed to apply profile to PID {processId}: {ex.Message}"
+        with
+        | :? ArgumentException ->
+            if exclusiveProcessPids.Contains processId then
+                exclusiveProcessPids <- exclusiveProcessPids |> Set.remove processId
+
+                if exclusiveProcessPids.IsEmpty then
+                    this.RestoreAllOtherProcesses processId
+
+            processEndedEvent.Trigger(null, processId)
+        | ex -> LoggingService.Error $"Failed to apply profile to PID {processId}: {ex.Message}"
 
     let applySubProfileToProcess processId subProfile =
         let parentProfile =
@@ -303,6 +311,8 @@ type ProcessMonitoringService() as this =
             applySubProfileToProcess processId subProfile
 
         member this.GetCurrentProcesses() =
+            exclusiveProcessPids <- set []
+            
             Process.GetProcesses()
             |> Array.map (fun p ->
                 let processName = getProcessName p
