@@ -6,8 +6,7 @@ open Microsoft.Win32.TaskScheduler
 module StartupService =
     let private taskName = "ProcessAffinityManager_Startup"
 
-    let private getExecutablePath () =
-        System.Reflection.Assembly.GetExecutingAssembly().Location
+    let private getExecutablePath () = Environment.ProcessPath
 
     let isStartupTaskScheduled () =
         try
